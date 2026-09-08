@@ -1,0 +1,31 @@
+syntax = "proto3";
+package vendor;
+
+option php_namespace = "App\\Grpc\\Vendor";
+option php_metadata_namespace = "GPBMetadata\\Vendor";
+
+service VendorService {
+    rpc UpdatePrice  (UpdatePriceRequest)  returns (UpdatePriceResponse);
+    rpc ResolveIds   (ResolveIdsRequest)   returns (ResolveIdsResponse);
+}
+
+message UpdatePriceRequest {
+    string vendor_code = 1;
+    string variant_sku = 2;
+    double price = 3;
+}
+
+message UpdatePriceResponse {
+    bool   success = 1;
+    string message = 2;
+}
+
+message ResolveIdsRequest {
+    string vendor_code = 1;
+    string variant_sku = 2;
+}
+
+message ResolveIdsResponse {
+    int64  internal_product_id = 1;
+    int64  internal_vendor_id = 2;
+}

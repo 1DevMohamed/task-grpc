@@ -1,0 +1,26 @@
+services:
+    integration-svc:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: integration-service
+        volumes:
+            - .:/var/www/html:z
+        ports:
+            - "8080:8000"
+        environment:
+            APP_ENV: local
+            APP_KEY: base64:CHANGE_ME==
+            SQS_REGION: us-east-1
+            SQS_ENDPOINT: http://elastic:9324
+            SQS_KEY: x
+            SQS_SECRET: x
+            VENDOR_GRPC_HOST: vendor-svc:50054
+            INVENTORY_GRPC_HOST: inventory-svc:9001
+        networks:
+            - microservices
+        restart: unless-stopped
+
+networks:
+    microservices:
+        external: true
