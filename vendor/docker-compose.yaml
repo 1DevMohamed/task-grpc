@@ -1,0 +1,19 @@
+services:
+    vendor-svc:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: vendor-service
+        expose:
+            - "50054"
+        volumes:
+            - .:/var/www/html:z
+        environment:
+            APP_ENV: local
+            APP_KEY: base64:CHANGE_ME==
+        networks:
+            - microservices
+
+networks:
+    microservices:
+        external: true
