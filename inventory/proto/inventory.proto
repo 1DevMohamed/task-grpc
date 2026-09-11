@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package inventory;
+
+option php_namespace          = "App\\Grpc\\Inventory";
+option php_metadata_namespace = "GPBMetadata\\Inventory";
+
+service InventoryService {
+    rpc CheckStock       (CheckStockRequest)  returns (CheckStockResponse);
+    rpc SetAbsoluteStock (SetStockRequest)    returns (SetStockResponse);
+}
+
+message CheckStockRequest {
+    int64 product_id = 1;
+    int32 quantity   = 2;
+}
+
+message CheckStockResponse {
+    bool  available          = 1;
+    int32 available_quantity = 2;
+}
+
+message SetStockRequest {
+    int64 product_id = 1;
+    int32 quantity   = 2;
+}
+
+message SetStockResponse {
+    bool   success = 1;
+    string message = 2;
+}

@@ -1,0 +1,43 @@
+FROM php:8.4-cli
+
+RUN apt-get update && apt-get install -y \
+        git \
+        unzip \
+        zip \
+        curl \
+        libzip-dev \
+        protobuf-compiler \
+    && docker-php-ext-install \
+        zip \
+        sockets \
+    && pecl install \
+        grpc \
+        protobuf \
+    && docker-php-ext-enable \
+        grpc \
+        protobuf \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --prefer-dist \
+    --no-interaction \
+    --optimize-autoloader
+
+COPY . .
+
+RUN ./vendor/bin/rr get-binary \
+    && mv rr /usr/local/bin/rr \
+    && chmod +x /usr/local/bin/rr
+
+EXPOSE 9001
+
+CMD ["/usr/local/bin/rr", "serve", "-c", ".rr.yaml"]

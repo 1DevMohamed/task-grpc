@@ -1,0 +1,19 @@
+services:
+    inventory-service:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: inventory-service
+        ports:
+            - "9001:9001"
+        volumes:
+            - .:/var/www/html:z
+        environment:
+            APP_ENV: local
+            APP_KEY: base64:CHANGE_ME==
+        networks:
+            - microservices
+
+networks:
+    microservices:
+        external: true
