@@ -13,10 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // $this->app->bind(
-        //     VendorServiceInterface::class,
-        //     VendorGrpcHandlerService::class
-        // );
+        $this->app->bind(
+            VendorServiceInterface::class,
+            VendorGrpcHandlerService::class
+        );
     }
 
     /**
