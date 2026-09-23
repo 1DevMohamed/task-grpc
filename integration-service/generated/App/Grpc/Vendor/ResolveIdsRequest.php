@@ -22,6 +22,14 @@ class ResolveIdsRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string variant_sku = 2;</code>
      */
     protected $variant_sku = '';
+    /**
+     * Generated from protobuf field <code>string idempotency_key = 3;</code>
+     */
+    protected $idempotency_key = '';
+    /**
+     * Generated from protobuf field <code>string correlation_id = 4;</code>
+     */
+    protected $correlation_id = '';
 
     /**
      * Constructor.
@@ -31,6 +39,8 @@ class ResolveIdsRequest extends \Google\Protobuf\Internal\Message
      *
      *     @type string $vendor_code
      *     @type string $variant_sku
+     *     @type string $idempotency_key
+     *     @type string $correlation_id
      * }
      */
     public function __construct($data = null)
@@ -79,6 +89,50 @@ class ResolveIdsRequest extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkString($var, true);
         $this->variant_sku = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string idempotency_key = 3;</code>
+     * @return string
+     */
+    public function getIdempotencyKey()
+    {
+        return $this->idempotency_key;
+    }
+
+    /**
+     * Generated from protobuf field <code>string idempotency_key = 3;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setIdempotencyKey(string $var)
+    {
+        GPBUtil::checkString($var, true);
+        $this->idempotency_key = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string correlation_id = 4;</code>
+     * @return string
+     */
+    public function getCorrelationId()
+    {
+        return $this->correlation_id;
+    }
+
+    /**
+     * Generated from protobuf field <code>string correlation_id = 4;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setCorrelationId(string $var)
+    {
+        GPBUtil::checkString($var, true);
+        $this->correlation_id = $var;
 
         return $this;
     }

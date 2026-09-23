@@ -11,9 +11,11 @@ service VendorService {
 }
 
 message UpdatePriceRequest {
-    string vendor_code = 1;
-    string variant_sku = 2;
-    double price       = 3;
+    string vendor_code     = 1;
+    string variant_sku     = 2;
+    double price           = 3;
+    string idempotency_key = 4;
+    string correlation_id  = 5;
 }
 
 message UpdatePriceResponse {
@@ -22,8 +24,10 @@ message UpdatePriceResponse {
 }
 
 message ResolveIdsRequest {
-    string vendor_code = 1;
-    string variant_sku = 2;
+    string vendor_code     = 1;
+    string variant_sku     = 2;
+    string idempotency_key = 3;
+    string correlation_id  = 4;
 }
 
 message ResolveIdsResponse {

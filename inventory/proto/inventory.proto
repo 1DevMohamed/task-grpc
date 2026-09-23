@@ -21,8 +21,10 @@ message CheckStockResponse {
 }
 
 message SetStockRequest {
-    int64 product_id = 1;
-    int32 quantity   = 2;
+    int64  product_id      = 1;
+    int32  quantity         = 2;
+    string idempotency_key = 3;
+    string correlation_id  = 4;
 }
 
 message SetStockResponse {

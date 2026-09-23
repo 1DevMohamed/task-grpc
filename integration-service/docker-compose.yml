@@ -11,15 +11,26 @@ services:
         environment:
             APP_ENV: local
             APP_KEY: base64:CHANGE_ME==
+            DB_CONNECTION: sqlite
             SQS_REGION: us-east-1
-            SQS_ENDPOINT: http://elastic:9324
+            SQS_ENDPOINT: http://sqs:9324
             SQS_KEY: x
             SQS_SECRET: x
             VENDOR_GRPC_HOST: vendor-svc:50054
             INVENTORY_GRPC_HOST: inventory-svc:9001
+            INTEGRATION_MAX_ATTEMPTS: 5
+            VENDOR_RPC_TIMEOUT_MS: 5000
+            INVENTORY_RPC_TIMEOUT_MS: 5000
+            INBOX_STALE_THRESHOLD: 120
         networks:
             - microservices
         restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/live"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
 
 networks:
     microservices:

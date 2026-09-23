@@ -26,6 +26,14 @@ class UpdatePriceRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>double price = 3;</code>
      */
     protected $price = 0.0;
+    /**
+     * Generated from protobuf field <code>string idempotency_key = 4;</code>
+     */
+    protected $idempotency_key = '';
+    /**
+     * Generated from protobuf field <code>string correlation_id = 5;</code>
+     */
+    protected $correlation_id = '';
 
     /**
      * Constructor.
@@ -36,6 +44,8 @@ class UpdatePriceRequest extends \Google\Protobuf\Internal\Message
      *     @type string $vendor_code
      *     @type string $variant_sku
      *     @type float $price
+     *     @type string $idempotency_key
+     *     @type string $correlation_id
      * }
      */
     public function __construct($data = null)
@@ -105,6 +115,50 @@ class UpdatePriceRequest extends \Google\Protobuf\Internal\Message
     public function setPrice(float $var)
     {
         $this->price = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string idempotency_key = 4;</code>
+     * @return string
+     */
+    public function getIdempotencyKey()
+    {
+        return $this->idempotency_key;
+    }
+
+    /**
+     * Generated from protobuf field <code>string idempotency_key = 4;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setIdempotencyKey(string $var)
+    {
+        GPBUtil::checkString($var, true);
+        $this->idempotency_key = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string correlation_id = 5;</code>
+     * @return string
+     */
+    public function getCorrelationId()
+    {
+        return $this->correlation_id;
+    }
+
+    /**
+     * Generated from protobuf field <code>string correlation_id = 5;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setCorrelationId(string $var)
+    {
+        GPBUtil::checkString($var, true);
+        $this->correlation_id = $var;
 
         return $this;
     }

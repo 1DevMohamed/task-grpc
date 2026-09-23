@@ -28,6 +28,7 @@ class WebhookIntegrationRequest extends FormRequest
             'variant_sku'  => ['required', 'string'],
             'quantity'     => ['nullable', 'integer'],
             'price'        => ['nullable', 'numeric'],
+            'merchant_id'  => ['nullable', 'string'],
         ];
     }
 

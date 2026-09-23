@@ -2,28 +2,42 @@
 
 namespace App\Console\Commands;
 
-use App\Dispatcher\MessageDispatcher;
+use App\Integration\Services\EventProcessingService;
 use App\Services\SqsService;
 use Illuminate\Console\Command;
 
 class ConsumeIntegrationQueueCommand extends Command
 {
-    protected $signature = 'consume:integration';
-    protected $description = 'Integration worker — polls SQS and routes to handlers';
+    protected $signature = 'consume:integration
+                            {--workers=1 : Number of messages to process per batch (not parallel workers)}';
+
+    protected $description = 'Integration worker — polls SQS and routes events to handlers via the processing pipeline';
 
     public function handle(
-        SqsService $sqs,
-        MessageDispatcher $dispatcher
+        SqsService             $sqs,
+        EventProcessingService $processor,
     ): void {
-        $this->info('Integration worker started...');
+        $queue = config('integration.sqs.queue', 'integration-inbound');
+
+        $this->info("Integration worker started — consuming from '{$queue}'...");
 
         $sqs->consume(
-            queue: 'integration-inbound',
-            callback: function (array $message) use ($dispatcher) {
-                $this->info("Dispatching: {$message['message_type']} [{$message['message_id']}]");
-                $dispatcher->dispatch($message);
-                $this->info("Done: {$message['message_id']}");
+            queue: $queue,
+            callback: function (string $body, array $sqsMessage) use ($processor): bool {
+                $sqsMessageId = $sqsMessage['MessageId'] ?? 'unknown';
+
+                $this->line("[{$sqsMessageId}] Processing message...");
+
+                $result = $processor->process($body);
+
+                $this->line("[{$sqsMessageId}] Result: {$result->status}"
+                    . ($result->message ? " — {$result->message}" : ''));
+
+                // Return true to acknowledge/delete, false to leave for retry
+                return $result->shouldAcknowledge;
             }
         );
+
+        $this->info('Integration worker stopped.');
     }
 }

@@ -37,6 +37,14 @@ return [
         'retry_delay_ms' => 0,
     ],
 
+    'vendor' => [
+        'grpc_host' => env('VENDOR_GRPC_HOST', 'vendor-svc:50054'),
+    ],
+
+    'inventory' => [
+        'grpc_host' => env('INVENTORY_GRPC_HOST', 'inventory-svc:9001'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

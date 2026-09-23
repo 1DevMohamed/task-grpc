@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Aws\Sqs\SqsClient;
+use Throwable;
 
 class SqsService
 {
@@ -26,56 +27,42 @@ class SqsService
             . '/000000000000/';
     }
 
+    /**
+     * Publish an event envelope to SQS.
+     *
+     * @param  string  $queue  Queue name
+     * @param  array   $data   Event envelope data
+     *
+     * @throws Throwable if publishing fails after retries
+     */
     public function publish(string $queue, array $data): void
     {
+        $messageAttributes = [
+            'event_type' => [
+                'DataType'    => 'String',
+                'StringValue' => $data['event_type'] ?? $data['message_type'] ?? 'unknown',
+            ],
+        ];
+
+        // Add event_id and correlation_id as message attributes for observability
+        if (isset($data['event_id'])) {
+            $messageAttributes['event_id'] = [
+                'DataType'    => 'String',
+                'StringValue' => $data['event_id'],
+            ];
+        }
+
+        if (isset($data['correlation_id'])) {
+            $messageAttributes['correlation_id'] = [
+                'DataType'    => 'String',
+                'StringValue' => $data['correlation_id'],
+            ];
+        }
+
         $this->client->sendMessage([
             'QueueUrl'          => $this->baseUrl . $queue,
             'MessageBody'       => json_encode($data),
-            'MessageAttributes' => [
-                'message_type' => [
-                    'DataType'    => 'String',
-                    'StringValue' => $data['message_type'] ?? 'unknown',
-                ],
-            ],
+            'MessageAttributes' => $messageAttributes,
         ]);
-    }
-
-    public function consume(string $queue, callable $callback): void
-    {
-        $queueUrl = $this->baseUrl . $queue;
-
-        while (true) {
-            $result = $this->client->receiveMessage([
-                'QueueUrl'            => $queueUrl,
-                'MaxNumberOfMessages' => 1,
-                'WaitTimeSeconds'     => 20,
-                'AttributeNames'      => ['All'],
-            ]);
-
-            $messages = $result->get('Messages') ?? [];
-
-            if (empty($messages)) {
-                continue;
-            }
-
-            foreach ($messages as $message) {
-                $data = json_decode($message['Body'], true);
-
-                try {
-                    $callback($data);
-
-                    $this->client->deleteMessage([
-                        'QueueUrl'      => $queueUrl,
-                        'ReceiptHandle' => $message['ReceiptHandle'],
-                    ]);
-
-                } catch (\Exception $e) {
-                    \Log::error('Message processing failed', [
-                        'error'   => $e->getMessage(),
-                        'message' => $data,
-                    ]);
-                }
-            }
-        }
     }
 }
